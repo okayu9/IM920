@@ -3,8 +3,9 @@
 #include "IM920.h"
 
 IM920::IM920(uint8_t busy_pin): busy_pin(busy_pin){
-    Serial.begin(19200);
     pinMode(busy_pin, INPUT);
+    Serial.begin(19200);
+    skipToLF();//skip version outut
 }
 
 void IM920::setWritable(boolean status){
