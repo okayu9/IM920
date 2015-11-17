@@ -47,7 +47,7 @@ void IM920::setTxID(uint16_t id){
 	skipToLF();
 }
 
-uint16_t IM920::readTxID(){
+uint16_t* IM920::readTxID(){
 	waitBusy();
 	//TODO
 	return 0;

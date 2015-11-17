@@ -9,7 +9,7 @@ public:
     void     setNodeNum(uint8_t);
     uint8_t  readNodeNum();
     void     setTxID(uint16_t);
-    uint16_t readTxID();//TODO
+    uint16_t* readTxID();//TODO
     void     eraseTxID();
     void     setCH(uint8_t);
     uint8_t  readCH();
