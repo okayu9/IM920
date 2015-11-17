@@ -9,7 +9,33 @@
 
 - 動作確認なし
 
-## コンストラクタ
+## サンプルコード
+
+```cpp
+#include <IM920.h>
+
+#define BUSY_PIN 3
+
+IM920 im(BUSY_PIN);
+
+void setup() {
+  im.reset();//設定リセット
+  im.setWritable(true);//設定書き込み許可
+  im.setNodeNum(0x00);//ノード番号を設定
+  im.eraseTxID();//送信先モジュールのIDを全消去
+  im.setTxID(0x0000);//送信先モジュールのIDを設定
+  im.setCH(6);//無線チャネルを設定(01~15)
+  im.setPower(3);//最大電力に設定
+  im.setRate(2);//長距離モード
+}
+
+uint8_t data[] = {1, 2, 3, 4};
+void loop() {
+  im.sendData(data, 4);
+}
+```
+
+## 機能
 
 ### IM920(uint8_t busy_pin)
 
