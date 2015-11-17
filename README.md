@@ -16,7 +16,7 @@
 
 #define BUSY_PIN 3
 
-IM920 im(BUSY_PIN);
+IM920 im(BUSY_PIN, receive);
 
 void setup() {
   im.reset();//設定リセット
@@ -29,17 +29,22 @@ void setup() {
   im.setRate(2);//長距離モード
 }
 
-uint8_t data[] = {1, 2, 3, 4};
+uint8_t data[8] = {1, 2, 3, 4};
 void loop() {
-  im.sendData(data, 4);
+  im.check();
+  im.sendData(data);
+}
+
+void receive(uint8_t node, uint16_t id, uint8_t rssi, uint8_t* data){
+  
 }
 ```
 
 ## 機能
 
-### IM920(uint8_t busy_pin)
+### IM920(uint8_t busy_pin, void (*receive)(uint8_t node, uint16_t id, uint8_t rssi, uint8_t* data))
 
-BUSYピンが接続されているピン番号を設定。
+BUSYピンが接続されているピン番号を設定。受信時に呼ばれる関数を指定。
 
 ### void setWritable(boolean status);
 
@@ -81,9 +86,9 @@ trueで許可、falseで禁止。
 
 設定されている無線通信チャンネルを取得。
 
-### void sendData(uint8_t* data, size_t len)
+### void sendData(uint8_t* data)
 
-データを送信。lenに長さを指定すること。
+8バイトのデータを送信。
 
 ### uint8_t readRSSI()
 
