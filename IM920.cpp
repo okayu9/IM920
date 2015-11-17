@@ -2,7 +2,9 @@
 #include "Arduino.h"
 #include "IM920.h"
 
-IM920::IM920(uint8_t busy_pin): busy_pin(busy_pin){
+IM920::IM920(uint8_t busy_pin, void (*receive)(uint8_t node, uint16_t id, uint8_t rssi, uint8_t* data))
+	:busy_pin(busy_pin),
+	 receive(receive){
     pinMode(busy_pin, INPUT);
     Serial.begin(19200);
     skipToLF();//skip version outut
@@ -75,10 +77,10 @@ uint8_t IM920::readCH(){
 	return ch;
 }
 
-void IM920::sendData(uint8_t* data, size_t len){
+void IM920::sendData(uint8_t* data){
 	waitBusy();
-	Serial.print("TXDA ");
-	for(size_t i=0; i<len; ++i){
+	Serial.print("TXDT ");
+	for(size_t i=0; i<8; ++i){
 		Serial.print(data[i], HEX);
 	}
 	Serial.print("¥r¥n");
@@ -143,6 +145,23 @@ void IM920::reset(){
 	waitBusy();
 	Serial.print("PCLR¥r¥n");
 	skipToLF();
+}
+
+boolean IM920::check(){
+	if(Serial.available()<36) return false;
+	uint8_t node = serial2num();
+	Serial.read();
+	uint16_t id = serial4num();
+	Serial.read();
+	uint8_t rssi = serial2num();
+	Serial.read();
+	uint8_t data[8];
+	for(byte i=0; i<8; ++i){
+		data[i] = serial2num();
+		Serial.read();
+	}
+	skipToLF();
+	receive(node, id, rssi, data);
 }
 
 void IM920::skipToLF(){

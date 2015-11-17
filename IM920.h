@@ -3,7 +3,7 @@
 
 class IM920{
 public:
-	IM920(uint8_t busy_pin);
+	IM920(uint8_t busy_pin, void (*receive)(uint8_t node, uint16_t id, uint8_t rssi, uint8_t* data));
     void     setWritable(boolean);
     uint16_t readID();
     void     setNodeNum(uint8_t);
@@ -13,7 +13,7 @@ public:
     void     eraseTxID();
     void     setCH(uint8_t);
     uint8_t  readCH();
-    void     sendData(uint8_t*, size_t len);
+    void     sendData(uint8_t*);
     uint8_t  readRSSI();
     void     setPower(uint8_t);
     uint8_t  readPower();
@@ -23,8 +23,10 @@ public:
     void     setSleep(boolean);
     void     reboot();
     void     reset();
+    boolean  check();
 private:
 	uint8_t busy_pin;
+	void (*receive)(uint8_t node, uint16_t id, uint8_t rssi, uint8_t* data);
 	void skipToLF();
 	void waitNbyte(uint8_t);
 	uint8_t char2num(uint8_t);
